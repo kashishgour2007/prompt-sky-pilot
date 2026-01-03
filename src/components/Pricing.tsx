@@ -1,50 +1,50 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check } from "lucide-react";
 
 const plans = [
   {
-    name: "Starter",
-    price: "Free",
-    period: "",
+    name: "Free",
+    price: "$0",
     description: "Perfect for getting started",
     features: [
-      "50 prompts",
-      "Basic organization",
+      "10 prompts per month",
+      "Basic AI improvements",
+      "Prompt testing",
       "Community support",
-      "1 workspace",
     ],
     cta: "Get Started",
     popular: false,
   },
   {
     name: "Pro",
-    price: "$19",
+    price: "$12",
     period: "/month",
-    description: "For serious prompt engineers",
+    description: "For power users",
     features: [
       "Unlimited prompts",
-      "AI optimization",
-      "Version control",
-      "Team collaboration",
+      "Advanced AI improvements",
+      "Prompt library & tags",
+      "Version history",
       "Priority support",
-      "Analytics dashboard",
+      "Export prompts",
     ],
     cta: "Start Free Trial",
     popular: true,
   },
   {
-    name: "Enterprise",
-    price: "Custom",
-    period: "",
-    description: "For large organizations",
+    name: "Team",
+    price: "$29",
+    period: "/month",
+    description: "For teams and organizations",
     features: [
       "Everything in Pro",
-      "SSO & SAML",
-      "Custom integrations",
-      "Dedicated support",
-      "SLA guarantee",
-      "On-premise option",
+      "5 team members",
+      "Shared prompt library",
+      "Team analytics",
+      "Admin controls",
+      "API access",
     ],
     cta: "Contact Sales",
     popular: false,
@@ -53,22 +53,19 @@ const plans = [
 
 const Pricing = () => {
   return (
-    <section id="pricing" className="py-32 relative">
-      <div className="container mx-auto px-6">
+    <section id="pricing" className="py-20 px-6">
+      <div className="container mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="text-primary font-medium mb-4 block">Pricing</span>
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Plans that{" "}
-            <span className="gradient-text">scale with you</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+            Simple, Transparent Pricing
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Start free and upgrade as your needs grow. No hidden fees.
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Choose the plan that fits your needs. Upgrade or downgrade anytime.
           </p>
         </motion.div>
 
@@ -79,45 +76,53 @@ const Pricing = () => {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className={`relative ${plan.popular ? "md:-mt-4 md:mb-[-1rem]" : ""}`}
+              transition={{ delay: index * 0.1 }}
             >
-              {plan.popular && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-primary to-accent text-sm font-medium text-primary-foreground">
-                  Most Popular
-                </div>
-              )}
-              <div
-                className={`h-full p-8 rounded-2xl border transition-all duration-300 ${
+              <Card
+                className={`h-full card-shadow ${
                   plan.popular
-                    ? "bg-card border-primary/50 glow-primary"
-                    : "bg-card border-border hover:border-muted-foreground/50"
+                    ? "border-primary ring-2 ring-primary/20"
+                    : ""
                 }`}
               >
-                <h3 className="text-xl font-semibold mb-2 text-foreground">{plan.name}</h3>
-                <p className="text-muted-foreground mb-4">{plan.description}</p>
-                <div className="mb-6">
-                  <span className="text-4xl font-bold text-foreground">{plan.price}</span>
-                  <span className="text-muted-foreground">{plan.period}</span>
-                </div>
-
-                <ul className="space-y-3 mb-8">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-3 text-muted-foreground">
-                      <Check className="w-5 h-5 text-primary flex-shrink-0" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-
-                <Button
-                  variant={plan.popular ? "hero" : "outline"}
-                  className="w-full"
-                  size="lg"
-                >
-                  {plan.cta}
-                </Button>
-              </div>
+                {plan.popular && (
+                  <div className="px-4 py-1 bg-primary text-primary-foreground text-sm font-medium text-center">
+                    Most Popular
+                  </div>
+                )}
+                <CardHeader className="text-center pb-4">
+                  <CardTitle className="text-xl">{plan.name}</CardTitle>
+                  <div className="mt-4">
+                    <span className="text-4xl font-bold text-foreground">
+                      {plan.price}
+                    </span>
+                    {plan.period && (
+                      <span className="text-muted-foreground">{plan.period}</span>
+                    )}
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    {plan.description}
+                  </p>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <ul className="space-y-3">
+                    {plan.features.map((feature) => (
+                      <li key={feature} className="flex items-center gap-3">
+                        <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <Check className="w-3 h-3 text-primary" />
+                        </div>
+                        <span className="text-sm text-foreground">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Button
+                    className="w-full mt-6"
+                    variant={plan.popular ? "default" : "outline"}
+                  >
+                    {plan.cta}
+                  </Button>
+                </CardContent>
+              </Card>
             </motion.div>
           ))}
         </div>
