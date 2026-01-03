@@ -1,69 +1,61 @@
 import { motion } from "framer-motion";
-import { Layers, Zap, GitBranch, Shield, BarChart3, Users } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Sparkles, TestTube, FolderOpen, Wand2, History, Share2 } from "lucide-react";
 
 const features = [
   {
-    icon: Layers,
-    title: "Prompt Library",
-    description: "Organize all your prompts in one place with smart categorization and tagging.",
-    gradient: "from-primary/20 to-primary/5",
-    iconColor: "text-primary",
+    icon: Sparkles,
+    title: "AI-Powered Improvements",
+    description:
+      "Transform basic prompts into detailed, effective instructions with one click.",
   },
   {
-    icon: GitBranch,
-    title: "Version Control",
-    description: "Track changes, compare versions, and rollback to previous prompts instantly.",
-    gradient: "from-accent/20 to-accent/5",
-    iconColor: "text-accent",
+    icon: TestTube,
+    title: "Test Prompts Instantly",
+    description:
+      "See how your prompts perform in real-time before using them elsewhere.",
   },
   {
-    icon: Zap,
-    title: "AI Optimization",
-    description: "Get intelligent suggestions to improve prompt performance and clarity.",
-    gradient: "from-yellow-500/20 to-yellow-500/5",
-    iconColor: "text-yellow-500",
+    icon: FolderOpen,
+    title: "Organized Library",
+    description:
+      "Save and categorize your best prompts with tags for easy access later.",
   },
   {
-    icon: BarChart3,
-    title: "Analytics",
-    description: "Measure prompt effectiveness with detailed performance metrics.",
-    gradient: "from-green-500/20 to-green-500/5",
-    iconColor: "text-green-500",
+    icon: Wand2,
+    title: "Smart Suggestions",
+    description:
+      "Get intelligent recommendations to make your prompts more effective.",
   },
   {
-    icon: Users,
-    title: "Team Collaboration",
-    description: "Share prompts with your team and collaborate in real-time.",
-    gradient: "from-pink-500/20 to-pink-500/5",
-    iconColor: "text-pink-500",
+    icon: History,
+    title: "Version History",
+    description:
+      "Track changes and improvements to your prompts over time.",
   },
   {
-    icon: Shield,
-    title: "Enterprise Security",
-    description: "Bank-grade encryption and SOC 2 compliance for your data.",
-    gradient: "from-blue-500/20 to-blue-500/5",
-    iconColor: "text-blue-500",
+    icon: Share2,
+    title: "Easy Sharing",
+    description:
+      "Share your best prompts with teammates or the community.",
   },
 ];
 
 const Features = () => {
   return (
-    <section id="features" className="py-32 relative">
-      <div className="container mx-auto px-6">
+    <section id="features" className="py-20 px-6">
+      <div className="container mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="text-primary font-medium mb-4 block">Features</span>
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Everything you need to{" "}
-            <span className="gradient-text">pilot your prompts</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+            Everything You Need
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Powerful tools designed to streamline your AI workflow and boost productivity.
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Powerful features to help you create and manage prompts like a pro
           </p>
         </motion.div>
 
@@ -74,16 +66,19 @@ const Features = () => {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="group"
+              transition={{ delay: index * 0.1 }}
             >
-              <div className="h-full p-6 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all duration-300">
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                  <feature.icon className={`w-6 h-6 ${feature.iconColor}`} />
-                </div>
-                <h3 className="text-xl font-semibold mb-2 text-foreground">{feature.title}</h3>
-                <p className="text-muted-foreground">{feature.description}</p>
-              </div>
+              <Card className="h-full card-shadow hover:border-primary/30 transition-colors">
+                <CardContent className="p-6">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                    <feature.icon className="w-6 h-6 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">
+                    {feature.title}
+                  </h3>
+                  <p className="text-muted-foreground">{feature.description}</p>
+                </CardContent>
+              </Card>
             </motion.div>
           ))}
         </div>

@@ -1,93 +1,91 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Play } from "lucide-react";
+import { ArrowRight, Sparkles, Play } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-      {/* Background gradient orbs */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse-glow" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: "1s" }} />
-      </div>
-
-      <div className="container mx-auto px-6 relative z-10">
+    <section className="pt-32 pb-20 px-6 overflow-hidden">
+      <div className="container mx-auto">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mb-6"
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8"
           >
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary border border-border text-sm text-muted-foreground">
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-              Now in public beta
+            <Sparkles className="w-4 h-4 text-primary" />
+            <span className="text-sm font-medium text-primary">
+              AI-Powered Prompt Engineering
             </span>
           </motion.div>
 
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight"
           >
-            Master Your AI Prompts with{" "}
-            <span className="gradient-text">PromptPilot</span>
+            Create Better AI Prompts{" "}
+            <span className="gradient-text">in Seconds</span>
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-2xl mx-auto"
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto"
           >
-            Create, organize, and optimize your AI prompts. Boost productivity with intelligent prompt management and version control.
+            PromptPilot helps you create, test, save, and improve AI prompts.
+            Get better results from ChatGPT, Claude, and other AI models.
           </motion.p>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <Button variant="hero" size="xl">
-              Start Free Trial
-              <ArrowRight className="w-5 h-5" />
-            </Button>
-            <Button variant="heroOutline" size="xl">
-              <Play className="w-5 h-5" />
-              Watch Demo
-            </Button>
+            <Link to="/dashboard">
+              <Button size="lg" className="gap-2 px-8">
+                Start Creating
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </Link>
+            <Link to="/about">
+              <Button variant="outline" size="lg" className="gap-2 px-8">
+                <Play className="w-4 h-4" />
+                Learn More
+              </Button>
+            </Link>
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="mt-16"
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="mt-16 relative"
           >
-            <div className="gradient-border rounded-2xl p-1 glow-primary">
-              <div className="bg-card rounded-xl overflow-hidden">
-                <div className="flex items-center gap-2 px-4 py-3 border-b border-border">
-                  <div className="w-3 h-3 rounded-full bg-destructive/80" />
-                  <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-                  <div className="w-3 h-3 rounded-full bg-green-500/80" />
-                  <span className="ml-2 text-sm text-muted-foreground">PromptPilot Dashboard</span>
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-10 pointer-events-none" />
+            <div className="rounded-2xl border border-border bg-card card-shadow p-6 max-w-3xl mx-auto">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-3 h-3 rounded-full bg-destructive/60" />
+                <div className="w-3 h-3 rounded-full bg-yellow-400/60" />
+                <div className="w-3 h-3 rounded-full bg-green-400/60" />
+              </div>
+              <div className="space-y-3 text-left">
+                <div className="p-3 rounded-lg bg-secondary/50">
+                  <p className="text-sm text-muted-foreground">Your prompt:</p>
+                  <p className="text-foreground">Write a blog post about AI</p>
                 </div>
-                <div className="p-6 space-y-4">
-                  <div className="flex gap-4">
-                    <div className="w-48 h-32 rounded-lg bg-secondary animate-pulse" />
-                    <div className="flex-1 space-y-3">
-                      <div className="h-4 bg-secondary rounded w-3/4" />
-                      <div className="h-4 bg-secondary rounded w-1/2" />
-                      <div className="h-4 bg-secondary rounded w-2/3" />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="h-24 rounded-lg bg-gradient-to-br from-primary/20 to-transparent border border-primary/30" />
-                    <div className="h-24 rounded-lg bg-gradient-to-br from-accent/20 to-transparent border border-accent/30" />
-                    <div className="h-24 rounded-lg bg-secondary" />
-                  </div>
+                <div className="p-3 rounded-lg bg-primary/5 border border-primary/20">
+                  <p className="text-sm text-primary mb-1">✨ Enhanced prompt:</p>
+                  <p className="text-foreground text-sm">
+                    Write a comprehensive 1500-word blog post about artificial
+                    intelligence for beginners. Include: an engaging introduction,
+                    3 main sections with real-world examples, and a conclusion with
+                    actionable takeaways. Tone: Professional yet accessible.
+                  </p>
                 </div>
               </div>
             </div>

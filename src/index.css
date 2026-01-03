@@ -6,41 +6,41 @@
 
 @layer base {
   :root {
-    --background: 222 47% 6%;
-    --foreground: 210 40% 98%;
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
 
-    --card: 222 47% 8%;
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
 
-    --popover: 222 47% 8%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
 
-    --primary: 190 95% 55%;
-    --primary-foreground: 222 47% 6%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 222 47% 12%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
 
-    --muted: 222 47% 14%;
-    --muted-foreground: 215 20% 55%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 270 95% 65%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 199 89% 48%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 222 47% 16%;
-    --input: 222 47% 16%;
-    --ring: 190 95% 55%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 217 91% 60%;
 
     --radius: 0.75rem;
 
     /* Custom tokens */
-    --glow-primary: 190 95% 55%;
-    --glow-accent: 270 95% 65%;
-    --gradient-start: 190 95% 55%;
-    --gradient-end: 270 95% 65%;
+    --glow-primary: 217 91% 60%;
+    --glow-accent: 199 89% 48%;
+    --gradient-start: 217 91% 60%;
+    --gradient-end: 199 89% 48%;
   }
 
   .dark {
@@ -73,14 +73,18 @@
   }
 
   .glow-primary {
-    box-shadow: 0 0 40px -10px hsl(var(--primary) / 0.5);
+    box-shadow: 0 0 40px -10px hsl(var(--primary) / 0.3);
   }
 
   .glow-accent {
-    box-shadow: 0 0 40px -10px hsl(var(--accent) / 0.5);
+    box-shadow: 0 0 40px -10px hsl(var(--accent) / 0.3);
   }
 
   .glass {
-    @apply backdrop-blur-xl bg-card/50 border border-border/50;
+    @apply backdrop-blur-xl bg-card/80 border border-border/50 shadow-sm;
+  }
+
+  .card-shadow {
+    box-shadow: 0 4px 20px -2px hsl(var(--primary) / 0.08);
   }
 }
