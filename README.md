@@ -4,7 +4,7 @@ PromptPilot is an AI-powered platform that helps you create, test, organize, and
 It is built for creators, developers, students, and professionals who want better results from AI models with clarity and control.
 
 🌐 Live App:
-https://prompt-sky-pilot-git-main-kashishs-projects-a237b18.vercel.app
+(https://prompt-sky-pilot-git-main-kashishs-projects-a237b818.vercel.app/)
 
 ✨ Features
 
