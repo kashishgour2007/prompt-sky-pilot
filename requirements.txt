@@ -1,7 +1,7 @@
 fastapi
-gunicorn
 uvicorn
 python-dotenv
 openai
 pydantic
+
 
