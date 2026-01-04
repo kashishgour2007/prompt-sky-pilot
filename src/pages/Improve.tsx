@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -6,7 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, ArrowRight, Copy, RotateCcw, Check, Lightbulb } from "lucide-react";
+import { Sparkles, ArrowRight, Copy, RotateCcw, Check, Lightbulb, Loader2 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const improvementTips = [
   "Be specific about the desired output format",
@@ -17,51 +21,69 @@ const improvementTips = [
 ];
 
 const Improve = () => {
+  const { user, isLoading: authLoading } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [originalPrompt, setOriginalPrompt] = useState("");
   const [improvedPrompt, setImprovedPrompt] = useState("");
   const [isImproving, setIsImproving] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const handleImprove = () => {
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate("/auth");
+    }
+  }, [user, authLoading, navigate]);
+
+  const handleImprove = async () => {
     if (!originalPrompt.trim()) return;
     setIsImproving(true);
+    setImprovedPrompt("");
 
-    setTimeout(() => {
-      const enhanced = `## Enhanced Prompt
+    try {
+      const { data, error } = await supabase.functions.invoke("improve-prompt", {
+        body: { prompt: originalPrompt },
+      });
 
-**Objective:** ${originalPrompt}
+      if (error) throw error;
 
-**Context:** 
-Please approach this task as an expert in the field. Consider all relevant aspects and provide a comprehensive response.
+      setImprovedPrompt(data.improvedPrompt || originalPrompt);
 
-**Instructions:**
-1. Begin with a clear summary of the main points
-2. Provide detailed explanations with examples where appropriate
-3. Consider potential edge cases or alternative perspectives
-4. Conclude with actionable recommendations
-
-**Format:**
-- Use clear headings and bullet points
-- Include relevant examples
-- Keep the response structured and easy to follow
-
-**Tone:** Professional yet accessible, informative but engaging`;
-
-      setImprovedPrompt(enhanced);
+      toast({
+        title: "Prompt improved!",
+        description: "Your prompt has been enhanced with AI.",
+      });
+    } catch (error: any) {
+      console.error("Error improving prompt:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to improve prompt",
+        variant: "destructive",
+      });
+    } finally {
       setIsImproving(false);
-    }, 2000);
+    }
   };
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(improvedPrompt);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+    toast({ title: "Copied to clipboard!" });
   };
 
   const reset = () => {
     setOriginalPrompt("");
     setImprovedPrompt("");
   };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -115,7 +137,7 @@ Please approach this task as an expert in the field. Consider all relevant aspec
                     >
                       {isImproving ? (
                         <>
-                          <Sparkles className="w-4 h-4 animate-spin" />
+                          <Loader2 className="w-4 h-4 animate-spin" />
                           Improving...
                         </>
                       ) : (
