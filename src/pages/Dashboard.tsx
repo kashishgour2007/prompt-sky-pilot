@@ -1,75 +1,191 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Play, Sparkles, Clock, Copy, Trash2 } from "lucide-react";
+import { Play, Sparkles, Clock, Copy, Trash2, Save, Loader2 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface PromptHistoryItem {
   id: string;
   prompt: string;
   result: string;
-  timestamp: Date;
+  created_at: string;
 }
 
 const Dashboard = () => {
+  const { user, isLoading: authLoading } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [prompt, setPrompt] = useState("");
   const [result, setResult] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [history, setHistory] = useState<PromptHistoryItem[]>([
-    {
-      id: "1",
-      prompt: "Write a professional email asking for project deadline extension",
-      result: "Subject: Request for Project Deadline Extension...",
-      timestamp: new Date(Date.now() - 3600000),
-    },
-    {
-      id: "2",
-      prompt: "Create a marketing tagline for an AI productivity app",
-      result: "\"Unlock Your Potential with AI-Powered Productivity\"",
-      timestamp: new Date(Date.now() - 7200000),
-    },
-  ]);
+  const [isSaving, setIsSaving] = useState(false);
+  const [history, setHistory] = useState<PromptHistoryItem[]>([]);
 
-  const handleTestPrompt = () => {
-    if (!prompt.trim()) return;
-    setIsLoading(true);
-    setTimeout(() => {
-      const mockResult = `This is a simulated response to your prompt: "${prompt.slice(0, 50)}..."`;
-      setResult(mockResult);
-      setHistory((prev) => [
-        {
-          id: Date.now().toString(),
-          prompt,
-          result: mockResult,
-          timestamp: new Date(),
-        },
-        ...prev,
-      ]);
-      setIsLoading(false);
-    }, 1500);
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate("/auth");
+    }
+  }, [user, authLoading, navigate]);
+
+  useEffect(() => {
+    if (user) {
+      fetchHistory();
+    }
+  }, [user]);
+
+  const fetchHistory = async () => {
+    const { data, error } = await supabase
+      .from("prompt_history")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(10);
+
+    if (error) {
+      console.error("Error fetching history:", error);
+    } else {
+      setHistory(data || []);
+    }
   };
 
-  const handleImprove = () => {
+  const handleTestPrompt = async () => {
     if (!prompt.trim()) return;
     setIsLoading(true);
-    setTimeout(() => {
-      setPrompt(
-        `[Enhanced] ${prompt}\n\nContext: Be specific and detailed.\nTone: Professional yet friendly.\nFormat: Structured response with clear sections.`
-      );
+    setResult("");
+
+    try {
+      const { data, error } = await supabase.functions.invoke("test-prompt", {
+        body: { prompt },
+      });
+
+      if (error) throw error;
+
+      const aiResult = data.result || "No response received";
+      setResult(aiResult);
+
+      // Save to history
+      const { error: historyError } = await supabase
+        .from("prompt_history")
+        .insert({
+          user_id: user?.id,
+          prompt,
+          result: aiResult,
+        });
+
+      if (historyError) {
+        console.error("Error saving to history:", historyError);
+      } else {
+        fetchHistory();
+      }
+
+      toast({
+        title: "Prompt tested!",
+        description: "Your prompt has been processed successfully.",
+      });
+    } catch (error: any) {
+      console.error("Error testing prompt:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to test prompt",
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
+  };
+
+  const handleImprove = async () => {
+    if (!prompt.trim()) return;
+    setIsLoading(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke("improve-prompt", {
+        body: { prompt },
+      });
+
+      if (error) throw error;
+
+      setPrompt(data.improvedPrompt || prompt);
+
+      toast({
+        title: "Prompt improved!",
+        description: "Your prompt has been enhanced with AI.",
+      });
+    } catch (error: any) {
+      console.error("Error improving prompt:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to improve prompt",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSaveToLibrary = async () => {
+    if (!prompt.trim()) return;
+    setIsSaving(true);
+
+    try {
+      const { error } = await supabase.from("prompts").insert({
+        user_id: user?.id,
+        title: prompt.substring(0, 50) + (prompt.length > 50 ? "..." : ""),
+        content: prompt,
+        tags: [],
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Saved to library!",
+        description: "Your prompt has been saved.",
+      });
+    } catch (error: any) {
+      console.error("Error saving prompt:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to save prompt",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
+    toast({ title: "Copied to clipboard!" });
   };
 
-  const deleteFromHistory = (id: string) => {
-    setHistory((prev) => prev.filter((item) => item.id !== id));
+  const deleteFromHistory = async (id: string) => {
+    const { error } = await supabase.from("prompt_history").delete().eq("id", id);
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete from history",
+        variant: "destructive",
+      });
+    } else {
+      setHistory((prev) => prev.filter((item) => item.id !== id));
+      toast({ title: "Deleted from history" });
+    }
   };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -112,7 +228,11 @@ const Dashboard = () => {
                         disabled={isLoading || !prompt.trim()}
                         className="gap-2"
                       >
-                        <Play className="w-4 h-4" />
+                        {isLoading ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Play className="w-4 h-4" />
+                        )}
                         Test Prompt
                       </Button>
                       <Button
@@ -121,8 +241,25 @@ const Dashboard = () => {
                         disabled={isLoading || !prompt.trim()}
                         className="gap-2"
                       >
-                        <Sparkles className="w-4 h-4" />
+                        {isLoading ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Sparkles className="w-4 h-4" />
+                        )}
                         Improve with AI
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={handleSaveToLibrary}
+                        disabled={isSaving || !prompt.trim()}
+                        className="gap-2"
+                      >
+                        {isSaving ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Save className="w-4 h-4" />
+                        )}
+                        Save to Library
                       </Button>
                     </div>
                   </CardContent>
@@ -182,7 +319,7 @@ const Dashboard = () => {
                         </p>
                         <div className="flex items-center justify-between">
                           <span className="text-xs text-muted-foreground">
-                            {item.timestamp.toLocaleTimeString()}
+                            {new Date(item.created_at).toLocaleTimeString()}
                           </span>
                           <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                             <Button
