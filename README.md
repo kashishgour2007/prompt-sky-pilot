@@ -56,7 +56,7 @@ npm or pnpm
 
 Steps
 # Clone the repository
-git clone <YOUR_GIT_URL>
+git clone (https://github.com/kashishgour2007/prompt-sky-pilot)
 
 # Navigate to the project directory
 cd promptpilot
